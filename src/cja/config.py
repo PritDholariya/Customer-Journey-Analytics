@@ -16,6 +16,7 @@ FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 # Data files
 RAW_EVENTS_FILE = RAW_DATA_DIR / "events.csv"
 CANONICAL_EVENTS_FILE = PROCESSED_DATA_DIR / "events_canonical.parquet"
+CLEAN_EVENTS_FILE = PROCESSED_DATA_DIR / "events_clean.parquet"
 
 # Sampling and Filtering configurations
 RANDOM_SEED = 42
