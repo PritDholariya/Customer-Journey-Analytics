@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+data/raw/
+data/processed/
+*.parquet
+*.csv
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+
+
+
+docs/
+
