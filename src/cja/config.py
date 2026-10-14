@@ -1,5 +1,17 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from the .env file in the project root.
+# load_dotenv() reads each KEY=VALUE line from .env and adds it to os.environ
+# BEFORE any os.environ.get() calls below.
+#
+# override=False (the default) means: if a variable is already set in the
+# real environment (e.g., in Docker or CI), the .env file does NOT overwrite it.
+# This is the correct production behaviour — Docker sets the real credentials,
+# .env is only for local development.
+_ENV_FILE = Path(__file__).resolve().parent.parent.parent / ".env"
+load_dotenv(dotenv_path=_ENV_FILE, override=False)
 
 # Base paths
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -19,6 +31,7 @@ CANONICAL_EVENTS_FILE = PROCESSED_DATA_DIR / "events_canonical.parquet"
 CLEAN_EVENTS_FILE = PROCESSED_DATA_DIR / "events_clean.parquet"
 USER_FEATURES_FILE = PROCESSED_DATA_DIR / "user_features.parquet"
 USER_SEGMENTS_FILE = PROCESSED_DATA_DIR / "user_segments.parquet"
+SEGMENT_FUNNELS_FILE = PROCESSED_DATA_DIR / "segment_funnels.parquet"
 
 # Sampling and Filtering configurations
 RANDOM_SEED = 42
@@ -60,3 +73,28 @@ KMEANS_K_FINAL = 5
 # DBSCAN tuning knobs
 DBSCAN_EPS = 1.5        # The radius of each point's neighborhood
 DBSCAN_MIN_SAMPLES = 10 # Minimum points to form a dense core region
+
+# ── Phase 7: Database ─────────────────────────────────────────────────────────
+# Database credentials are NEVER hardcoded here.
+# They are read from environment variables at runtime.
+# This is a fundamental security rule — credentials must not appear in code
+# that could be committed to a public git repository.
+#
+# For local development, set these in a .env file (which is git-ignored).
+# For production (Docker), set them in docker-compose.yml as env vars.
+#
+# Defaults below are only for local Docker development convenience.
+DB_HOST     = os.environ.get("DB_HOST",     "localhost")
+DB_PORT     = os.environ.get("DB_PORT",     "5432")
+DB_NAME     = os.environ.get("DB_NAME",     "cja_db")
+DB_USER     = os.environ.get("DB_USER",     "cja_user")
+DB_PASSWORD = os.environ.get("DB_PASSWORD", "cja_password")
+
+# SQLAlchemy connection URL constructed from the env vars above
+DATABASE_URL = (
+    f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}"
+    f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
+
+# For unit tests (no Postgres needed) — SQLite in-memory database
+TEST_DATABASE_URL = "sqlite://"
