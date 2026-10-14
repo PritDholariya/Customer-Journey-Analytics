@@ -1,6 +1,6 @@
 # Customer Journey Analytics & Behavioral Segmentation Platform
 
-An end-to-end analytics and machine learning system that transforms raw e-commerce clickstream events into actionable behavioral segments, pinpoints purchase funnel drop-off leakages, serves real-time insights via a FastAPI service, and powers DAX-intensive Power BI decision dashboards.
+An end-to-end analytics and machine learning system that transforms raw e-commerce clickstream events into actionable behavioral segments, pinpoints purchase funnel drop-off leakages, and serves real-time insights via a FastAPI REST service.
 
 Built on the real-world **Retailrocket e-commerce dataset** (~2.76M clickstream events over ~4.5 months).
 
@@ -53,12 +53,6 @@ Built on the real-world **Retailrocket e-commerce dataset** (~2.76M clickstream 
                                                             ┌─────────────────────────────────┐
                                                             │ Phase 8: FastAPI REST Service   │
                                                             │ (/segments, /funnels, /users)   │
-                                                            └────────────────┬────────────────┘
-                                                                             │
-                                                                             ▼
-                                                            ┌─────────────────────────────────┐
-                                                            │ Power BI Desktop (Star Schema)  │
-                                                            │ (Advanced DAX & What-If Modeler)│
                                                             └─────────────────────────────────┘
 ```
 
@@ -206,23 +200,6 @@ Once the API is running, visit interactive documentation at:
 | `GET` | `/funnels` | Side-by-side funnel metrics across all segments |
 | `GET` | `/users/{user_id}/segment` | Real-time lookup of segment classification for a given `user_id` |
 
----
-
-## Power BI & DAX Analytics Integration
-
-The processed tables are designed to be imported into **Power BI Desktop** using a clean **Star Schema** to power two interactive, DAX-intensive dashboards:
-
-1. **Dashboard 1: Executive Customer Journey & Funnel Conversion Analytics**
-   - **Cumulative Funnel Conversion Rate:** Dynamic step reach calculated via `CALCULATE`, `DISTINCTCOUNT`, and stage hierarchies.
-   - **Step-to-Step Drop-off Waterfall:** Visualizing exact stage leakages across browsing vs carting.
-   - **7-Day Rolling Conversion Velocity:** Time Intelligence calculation tracking conversion trends over time using `DATESINPERIOD`.
-   - **Dynamic KPI Parameter Switcher:** Measure branching via disconnected parameter tables and `SWITCH(SELECTEDVALUE(...))`.
-
-2. **Dashboard 2: Behavioral Segment Profiling & What-If Modeler**
-   - **Segment vs Baseline Index Matrix:** Benchmarking any segment's engagement against site averages using `ALLEXCEPT` and `AVERAGEX`.
-   - **What-If Cart Recovery Modeler:** Interactive scenario simulator using disconnected parameter tables (`GENERATESERIES`) to project recovered transactions:
-     $$\text{Incremental Transactions} = \text{Cart Abandoners} \times \text{Recovery Rate} \times \text{Baseline Conversion Rate}$$
-   - **Customer Journey Intent Scoring:** Dynamic composite weighting across session frequency, duration, and item breadth.
 
 ---
 
